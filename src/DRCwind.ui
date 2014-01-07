@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>739</width>
+    <height>546</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>CUDA-Based Design Rule Checker</string>
   </property>
   <widget class="QWidget" name="centralwidget"/>
   <widget class="QMenuBar" name="menubar">
@@ -19,7 +19,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>739</width>
      <height>21</height>
     </rect>
    </property>
@@ -32,12 +32,44 @@
    <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionOpen"/>
+   <addaction name="separator"/>
+   <addaction name="actionRunDRC"/>
+  </widget>
+  <widget class="ErrorList" name="errorList">
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+  </widget>
   <action name="actionOpen">
    <property name="text">
     <string>Open...</string>
    </property>
   </action>
+  <action name="actionRunDRC">
+   <property name="text">
+    <string>Run DRC</string>
+   </property>
+  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ErrorList</class>
+   <extends>QDockWidget</extends>
+   <header>widgets/ErrorList.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
