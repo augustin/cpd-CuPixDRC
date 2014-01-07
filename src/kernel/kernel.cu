@@ -4,18 +4,14 @@
 // By Ingemar Ragnemalm 2010
 
 #include <stdio.h>
-#include <cuda.h>
 
-const int N = 16; 
-const int blocksize = 16; 
+#include "kernel.h"
+#include "tracer.h"
 
-__global__ 
-void hello(char *a, int *b) 
-{
-    a[threadIdx.x] += b[threadIdx.x];
-}
+const int N = 16;
+const int blocksize = 16;
 
-void kernel_main()
+void kernel_main(int device)
 {
     char a[N] = "Hello \0\0\0\0\0\0";
     int b[N] = {15, 10, 6, 0, -11, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -41,3 +37,5 @@ void kernel_main()
 
     printf("%s\n", a);
 }
+
+
