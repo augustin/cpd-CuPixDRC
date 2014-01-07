@@ -9,17 +9,17 @@ class DRCwind;
 
 class DRCwind : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit DRCwind(QWidget *parent = 0);
-	~DRCwind();
+    explicit DRCwind(QWidget *parent = 0);
+    ~DRCwind();
 
 private slots:
-	void on_actionOpen_triggered();
+    void on_actionOpen_triggered();
 
 private:
-	Ui::DRCwind *ui;
+    Ui::DRCwind *ui;
 };
 
 #endif // DRCWIND_H
