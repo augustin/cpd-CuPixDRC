@@ -4,18 +4,18 @@
 #include "kernel/main.h"
 
 DRCwind::DRCwind(QWidget *parent) :
-	QMainWindow(parent),
-	ui(new Ui::DRCwind)
+    QMainWindow(parent),
+    ui(new Ui::DRCwind)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 }
 
 DRCwind::~DRCwind()
 {
-	delete ui;
+    delete ui;
 }
 
 void DRCwind::on_actionOpen_triggered()
 {
-	kernel_main();
+    kernel_main();
 }
