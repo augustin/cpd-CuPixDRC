@@ -15,6 +15,9 @@ public:
 	explicit DRCwind(QWidget *parent = 0);
 	~DRCwind();
 
+private slots:
+	void on_actionOpen_triggered();
+
 private:
 	Ui::DRCwind *ui;
 };
