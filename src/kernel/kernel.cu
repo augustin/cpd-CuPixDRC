@@ -4,6 +4,7 @@
 // By Ingemar Ragnemalm 2010
 
 #include <stdio.h>
+#include <cuda.h>
 
 const int N = 16; 
 const int blocksize = 16; 
