@@ -28,6 +28,7 @@ void kernel_main(int device)
     cudaMemcpy( ad, a, csize, cudaMemcpyHostToDevice );
     cudaMemcpy( bd, b, isize, cudaMemcpyHostToDevice );
 
+    cudaSetDevice(device);
     dim3 dimBlock( blocksize, 1 );
     dim3 dimGrid( 1, 1 );
     hello<<<dimGrid, dimBlock>>>(ad, bd);

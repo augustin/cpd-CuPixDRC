@@ -21,7 +21,6 @@ private slots:
 
 private:
     Ui::DRCwind *ui;
-    QStringList devices;
 };
 
 #endif // DRCWIND_H
