@@ -7,14 +7,19 @@ include_directories(${QT_INCLUDE} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SO
 find_package(CUDA)
 set(CUDA_KERNEL_SRCS kernel/kernel.cu
                      kernel/tracer.cu)
+set(CUDA_KERNEL_HDRS kernel/kernel.h
+                     kernel/tracer.h)
 
 set(SRCS DRCwind.cpp
          widgets/ErrorList.cpp
+         dialogs/SelectDevice.cpp
          Main.cpp)
 set(HDRS DRCwind.h
-         widgets/ErrorList.h)
+         widgets/ErrorList.h
+         dialogs/SelectDevice.h)
 set(UIS DRCwind.ui
-        widgets/ErrorList.ui)
+        widgets/ErrorList.ui
+        dialogs/SelectDevice.ui)
 qt_moc(MOC_SRCS ${HDRS})
 qt_ui(UIC_HDRS ${UIS})
 
