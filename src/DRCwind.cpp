@@ -1,7 +1,7 @@
 #include "DRCwind.h"
 #include "ui_DRCwind.h"
 
-#include "kernel/kernel.h"
+#include "kernel/init.h"
 #include "dialogs/SelectDevice.h"
 
 DRCwind::DRCwind(QWidget *parent) :
