@@ -1,6 +1,6 @@
-#ifndef KERNEL_MAIN_H
-#define KERNEL_MAIN_H
+#ifndef KERNEL_TRACER_H
+#define KERNEL_TRACER_H
 
-void kernel_main(int device);
+__global__ void hello(char *a, int *b);
 
-#endif // KERNEL_MAIN_H
+#endif // KERNEL_TRACER_H

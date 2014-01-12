@@ -6,9 +6,9 @@ include_directories(${QT_INCLUDE} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SO
 
 find_package(CUDA)
 set(CUDA_KERNEL_SRCS kernel/kernel.cu
-                     kernel/tracer.cu)
+                     kernel/init.cu)
 set(CUDA_KERNEL_HDRS kernel/kernel.h
-                     kernel/tracer.h)
+                     kernel/init.h)
 
 set(SRCS DRCwind.cpp
          widgets/ErrorList.cpp
