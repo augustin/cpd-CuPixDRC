@@ -1,10 +1,13 @@
 cmake_minimum_required(VERSION 2.8)
 project(CuPixDRC)
 
-include(../CMakeTests/FindAnyQt.cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/../CMakeTests)
+find_package(AnyQt)
+find_package(CUDA)
 include_directories(${QT_INCLUDE} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
-find_package(CUDA)
+add_subdirectory(../../ChipLib/ChipLib "${CMAKE_CURRENT_BINARY_DIR}/ChipLib")
+
 set(CUDA_KERNEL_SRCS kernel/kernel.cu
                      kernel/init.cu)
 
