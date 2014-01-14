@@ -11,7 +11,7 @@
 const int N = 16;
 const int blocksize = 16;
 
-void kernel_main(int device)
+void kernel_main_cuda(int device)
 {
     char a[N] = "Hello \0\0\0\0\0\0";
     int b[N] = {15, 10, 6, 0, -11, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -38,5 +38,4 @@ void kernel_main(int device)
 
     printf("%s\n", a);
 }
-
 

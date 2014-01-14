@@ -30,6 +30,10 @@ void DRCwind::on_actionRunDRC_triggered()
     SelectDevice d;
     if(d.exec() == QDialog::Accepted) {
         int dev = d.device();
-        kernel_main(dev);
+        if(d.device() == d.deviceCPU()) {
+            //kernel_main_cpu();
+        } else {
+            kernel_main_cuda(dev);
+        }
     }
 }
