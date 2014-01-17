@@ -6,6 +6,7 @@
 namespace Ui {
 class DRCwind;
 }
+class Chip;
 
 class DRCwind : public QMainWindow
 {
@@ -21,6 +22,7 @@ private slots:
 
 private:
     Ui::DRCwind *ui;
+    Chip* chip;
 };
 
 #endif // DRCWIND_H
