@@ -3,6 +3,6 @@
 
 #include "kernel_defs.h"
 
-__global__ void hello(char *a, int *b);
+KERNEL_FUNCTION(void, hello) (char *a, int *b);
 
 #endif // KERNEL_KERNEL_H

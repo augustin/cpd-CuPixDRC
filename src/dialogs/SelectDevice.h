@@ -16,7 +16,6 @@ public:
 	~SelectDevice();
 
 	int device();
-    int deviceCPU();
 
 private:
 	Ui::SelectDevice *ui;

@@ -26,11 +26,6 @@ SelectDevice::SelectDevice(QWidget *parent) :
 		ui->deviceList->addTopLevelItem(itm);
 	}
 
-    QTreeWidgetItem* itm = new QTreeWidgetItem;
-    itm->setText(0, "CPU");
-    itm->setText(1, "1");
-    ui->deviceList->addTopLevelItem(itm);
-
 	resizeCols();
 }
 
@@ -49,8 +44,4 @@ void SelectDevice::resizeCols()
 int SelectDevice::device()
 {
 	return ui->deviceList->indexOfTopLevelItem(ui->deviceList->currentItem());
-}
-int SelectDevice::deviceCPU()
-{
-    return ui->deviceList->topLevelItemCount()-1;
 }

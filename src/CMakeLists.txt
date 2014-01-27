@@ -10,30 +10,40 @@ add_subdirectory(../../ChipLib/ChipLib "${CMAKE_CURRENT_BINARY_DIR}/ChipLib")
 include_directories(../../ChipLib/ChipLib)
 include_directories(../../ChipLib/ChipDisplay)
 
-set(CUDA_KERNEL_SRCS kernel/kernel.cu
-                     kernel/init.cu)
+set(CUDA_KERNEL_SRCS kernel/init.cu
+                     kernel/kernel.cu)
+
+set(CUDA_KERNEL_SRCS_C kernel/init.cpp
+                     kernel/kernel.cpp)
 
 set(CUDA_KERNEL_HDRS kernel/kernel.h
-                     kernel/init.h
-                     PixelData.h)
+                     kernel/init.h)
 
 set(SRCS DRCwind.cpp
          widgets/ErrorList.cpp
-         dialogs/SelectDevice.cpp
          Main.cpp
-         ImageRequester.cpp
-         ../../ChipLib/ChipDisplay/PainterLG.cpp)
+         ImageRequester.cpp)
 
 set(HDRS DRCwind.h
-         widgets/ErrorList.h
-         dialogs/SelectDevice.h)
+         widgets/ErrorList.h)
+
+qt_moc(MOC_SRCS ${HDRS})
+qt_moc(MOC_CUDA_SRCS dialogs/SelectDevice.h)
 
 set(UIS DRCwind.ui
-        widgets/ErrorList.ui
-        dialogs/SelectDevice.ui)
-qt_moc(MOC_SRCS ${HDRS})
+        widgets/ErrorList.ui)
 qt_ui(UIC_HDRS ${UIS})
+qt_ui(UIC_CUDA_HDRS dialogs/SelectDevice.ui)
 
-cuda_compile(CUDA_KERNEL_OBJS ${CUDA_KERNEL_SRCS})
-cuda_add_executable(CuPixDRC ${CUDA_KERNEL_OBJS} ${UIC_HDRS} ${MOC_SRCS} ${SRCS})
-target_link_libraries(CuPixDRC ChipLib ${QT_LIBS})
+add_executable(CpuPixDRC ${CUDA_KERNEL_SRCS_C}
+                         ${UIC_HDRS} ${MOC_SRCS}
+                         ${SRCS})
+target_link_libraries(CpuPixDRC ChipLib ${QT_LIBS})
+
+cuda_compile(CUDA_KERNEL_OBJS ${CUDA_KERNEL_SRCS} OPTIONS -DCUDA)
+cuda_add_executable(CudaPixDRC ${CUDA_KERNEL_OBJS}
+                               ${UIC_HDRS} ${MOC_SRCS}
+                                    dialogs/SelectDevice.cpp ${UIC_CUDA_HDRS} ${MOC_CUDA_SRCS}
+                               ${SRCS})
+set_target_properties(CudaPixDRC PROPERTIES COMPILE_DEFINITIONS CUDA)
+target_link_libraries(CudaPixDRC ChipLib ${QT_LIBS})
