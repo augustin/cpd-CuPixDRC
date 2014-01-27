@@ -14,7 +14,7 @@ PixelData ImageRequester::layerPixelData(QString layerName)
 
 QImage ImageRequester::layer(QString layerName)
 {
-    QImage ret(chip->nativeLayerSize(layerName), QImage::Format_Mono);
+    QImage ret(chip->boundingRect(layerName).size(), QImage::Format_Mono);
     QPainter p;
     p.begin(&ret);
     chip->render(new PainterLG(&p), layerName);

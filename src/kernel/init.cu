@@ -8,9 +8,7 @@
 #include "init.h"
 #include "kernel.h"
 
-const int N = 16;
-const int blocksize = 16;
-
+#ifdef CUDA
 void kernel_main_cuda(int device)
 {
     char a[N] = "Hello \0\0\0\0\0\0";
@@ -31,11 +29,16 @@ void kernel_main_cuda(int device)
     cudaSetDevice(device);
     dim3 dimBlock( blocksize, 1 );
     dim3 dimGrid( 1, 1 );
-    hello<<<dimGrid, dimBlock>>>(ad, bd);
+	device_hello<<<dimGrid, dimBlock>>>(ad, bd);
     cudaMemcpy( a, ad, csize, cudaMemcpyDeviceToHost );
     cudaFree( ad );
     cudaFree( bd );
 
     printf("%s\n", a);
 }
-
+#else
+void kernel_main_cpu()
+{
+	printf("I do nothing");
+}
+#endif

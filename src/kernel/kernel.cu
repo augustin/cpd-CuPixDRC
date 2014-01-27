@@ -1,6 +1,6 @@
 #include "kernel.h"
 
-__global__ void hello(char *a, int *b)
+KERNEL_FUNCTION(void, hello) (char *a, int *b)
 {
-    a[threadIdx.x] += b[threadIdx.x];
+	a[0] += b[0];
 }

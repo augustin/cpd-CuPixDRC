@@ -5,7 +5,9 @@
 #include "Chip.h"
 #include "ImageRequester.h"
 
-#include "dialogs/SelectDevice.h"
+#ifdef CUDA
+#   include "dialogs/SelectDevice.h"
+#endif
 
 #include <QFileDialog>
 #include <QElapsedTimer>
@@ -17,6 +19,12 @@ DRCwind::DRCwind(QWidget *parent) :
     ui->setupUi(this);
     ui->errorList->hide();
     chip = 0;
+
+#ifdef CUDA
+	setWindowTitle(windowTitle() + " - CUDA");
+#else
+	setWindowTitle(windowTitle() + " - CPU");
+#endif
 
     ui->actionOpen->setIcon(style()->standardIcon(QStyle::SP_DirOpenIcon));
     ui->actionRunDRC->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
@@ -43,15 +51,15 @@ void DRCwind::on_actionOpen_triggered()
 
 void DRCwind::on_actionRunDRC_triggered()
 {
+#ifdef CUDA
     SelectDevice d;
     if(d.exec() == QDialog::Accepted) {
         int dev = d.device();
         ImageRequester* i = new ImageRequester(chip);
-
-        if(d.device() == d.deviceCPU()) {
-            //kernel_main_cpu();
-        } else {
-            kernel_main_cuda(dev);
-        }
+        kernel_main_cuda(dev);
     }
+#else
+    ImageRequester* i = new ImageRequester(chip);
+    kernel_main_cpu();
+#endif
 }
