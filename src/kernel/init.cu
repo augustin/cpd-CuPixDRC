@@ -29,7 +29,7 @@ void kernel_main_cuda(int device)
     cudaSetDevice(device);
     dim3 dimBlock( blocksize, 1 );
     dim3 dimGrid( 1, 1 );
-	device_hello<<<dimGrid, dimBlock>>>(ad, bd);
+	//device_hello<<<dimGrid, dimBlock>>>(*ad, 1, 1);
     cudaMemcpy( a, ad, csize, cudaMemcpyDeviceToHost );
     cudaFree( ad );
     cudaFree( bd );
@@ -39,6 +39,6 @@ void kernel_main_cuda(int device)
 #else
 void kernel_main_cpu()
 {
-	printf("I do nothing");
+	cpu_hello(0,0,0);
 }
 #endif
