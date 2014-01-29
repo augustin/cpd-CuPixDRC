@@ -13,7 +13,7 @@ include_directories(../../ChipLib/ChipDisplay)
 set(CUDA_KERNEL_SRCS kernel/init.cu
                      kernel/kernel.cu)
 
-set(CUDA_KERNEL_SRCS_C kernel/init.cpp
+set(CPU_KERNEL_SRCS  kernel/init.cpp
                      kernel/kernel.cpp)
 
 set(CUDA_KERNEL_HDRS kernel/kernel.h
@@ -35,7 +35,7 @@ set(UIS DRCwind.ui
 qt_ui(UIC_HDRS ${UIS})
 qt_ui(UIC_CUDA_HDRS dialogs/SelectDevice.ui)
 
-add_executable(CpuPixDRC ${CUDA_KERNEL_SRCS_C}
+add_executable(CpuPixDRC ${CPU_KERNEL_SRCS}
                          ${UIC_HDRS} ${MOC_SRCS}
                          ${SRCS})
 target_link_libraries(CpuPixDRC ChipLib ${QT_LIBS})
