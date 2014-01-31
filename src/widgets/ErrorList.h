@@ -15,11 +15,11 @@ public:
 	explicit ErrorList(QWidget *parent = 0);
 	~ErrorList();
 
-    void addItem(QString msg);
+	void setErrors(int *errors);
+	void resizeCols();
 
 private:
 	Ui::ErrorList *ui;
-    void resizeCols();
 };
 
 #endif // ERRORLIST_H

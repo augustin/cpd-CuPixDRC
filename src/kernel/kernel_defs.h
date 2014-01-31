@@ -1,6 +1,8 @@
 #ifndef KERNEL_DEFS_H
 #define KERNEL_DEFS_H
 
+#define MAX_ERRORS 1000
+
 /* Some people say this is "abusing the preprocessor", but it should work
  * on any modern compiler. Two '#'s means print the literal, one '#' means
  * print the literal as a string. */
