@@ -17,7 +17,8 @@ set(CPU_KERNEL_SRCS  kernel/init.cpp
                      kernel/kernel.cpp)
 
 set(CUDA_KERNEL_HDRS kernel/kernel.h
-                     kernel/init.h)
+                     kernel/init.h
+                     kernel/errors.h)
 
 set(SRCS DRCwind.cpp
          widgets/ErrorList.cpp

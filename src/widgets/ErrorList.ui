@@ -33,9 +33,25 @@
       <property name="indentation">
        <number>0</number>
       </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+      <attribute name="headerMinimumSectionSize">
+       <number>10</number>
+      </attribute>
       <column>
        <property name="text">
         <string>Type</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>X</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Y</string>
        </property>
       </column>
       <column>

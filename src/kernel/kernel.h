@@ -3,6 +3,6 @@
 
 #include "kernel_defs.h"
 
-KERNEL_FUNCTION(void, hello) (char *a[], int b, int c);
+KERNEL_FUNCTION(void, drc) (char* pixels, int imgW, int imgH, int* error_buffer);
 
 #endif // KERNEL_KERNEL_H

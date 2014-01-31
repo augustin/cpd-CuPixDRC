@@ -4,8 +4,8 @@
 #define N 16
 #define blocksize 16
 
-void kernel_main_cuda(int device);
-void kernel_main_cpu();
+int* kernel_main_cuda(int device);
+int* kernel_main_cpu();
 
 #endif // KERNEL_INIT_H
 

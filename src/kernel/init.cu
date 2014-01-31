@@ -4,12 +4,14 @@
 // By Ingemar Ragnemalm 2010
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
 
 #include "init.h"
 #include "kernel.h"
 
 #ifdef CUDA
-void kernel_main_cuda(int device)
+int* kernel_main_cuda(int device)
 {
     char a[N] = "Hello \0\0\0\0\0\0";
     int b[N] = {15, 10, 6, 0, -11, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -29,7 +31,7 @@ void kernel_main_cuda(int device)
     cudaSetDevice(device);
     dim3 dimBlock( blocksize, 1 );
     dim3 dimGrid( 1, 1 );
-	//device_hello<<<dimGrid, dimBlock>>>(*ad, 1, 1);
+	//device_drc<<<dimGrid, dimBlock>>>(*ad, 1, 1);
     cudaMemcpy( a, ad, csize, cudaMemcpyDeviceToHost );
     cudaFree( ad );
     cudaFree( bd );
@@ -37,8 +39,23 @@ void kernel_main_cuda(int device)
     printf("%s\n", a);
 }
 #else
-void kernel_main_cpu()
+int* kernel_main_cpu()
 {
-	cpu_hello(0,0,0);
+	int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
+	memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
+	char* testarray =
+		"xxxxxxxxxx"
+		"xxxxxxxxxx"
+		"xxxxxxxxxx"
+		"xxxxxxxxxx"
+		"xxxxx    x"
+		"xxxxxxxxxx"
+		"xxx xxxxxx"
+		"xxx xxxxxx"
+		"xxx xxxxxx"
+		"xxx xxxxxx";
+
+	cpu_drc(testarray, 10, 10, ret);
+	return ret;
 }
 #endif

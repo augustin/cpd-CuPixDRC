@@ -51,15 +51,23 @@ void DRCwind::on_actionOpen_triggered()
 
 void DRCwind::on_actionRunDRC_triggered()
 {
+	int* errors = 0;
+
 #ifdef CUDA
     SelectDevice d;
     if(d.exec() == QDialog::Accepted) {
         int dev = d.device();
         ImageRequester* i = new ImageRequester(chip);
-        kernel_main_cuda(dev);
+		errors = kernel_main_cuda(dev);
     }
 #else
     ImageRequester* i = new ImageRequester(chip);
-    kernel_main_cpu();
+	errors = kernel_main_cpu();
 #endif
+
+	if(errors) {
+		ui->errorList->setErrors(errors);
+		free(errors);
+		ui->errorList->show();
+	}
 }
