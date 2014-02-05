@@ -11,16 +11,16 @@ int* kernel_main_cuda(int device)
 
     int w = 10, h = 10;
     char* pixels =
-        "xxxxxxxxxx"
-        "xxxxxxxxxx"
-        "xxxxxxxxxx"
-        "xxxxxxxxxx"
-        "xxxxx    x"
-        "xxxxxxxxxx"
-        "xxx xxxxxx"
-        "xxx xxxxxx"
-        "xxx xxxxxx"
-        "xxx xxxxxx";
+            "xxxxxxxxxx"
+            "xxxxxxxxxx"
+            "xxxxxxxxxx"
+            "xxxxxxxxxx"
+            "xxxxx    x"
+            "xxxxxxxxxx"
+            "xxx xxxxxx"
+            "xxx xxxxxx"
+            "xxx xxxxxx"
+            "xxx xxxxxx";
 
     cudaSetDevice(device);
 
@@ -50,7 +50,7 @@ int* kernel_main_cuda(int device)
      *    too buggy and it's not my fault.
      */
 
-    dim3 blocks(8, 8);
+    dim3 blocks(3, 3);
     dim3 threads(1, 1);
 
     device_drc<<<blocks, threads>>>(devPixels, w, h, error_buffer);
@@ -68,21 +68,21 @@ int* kernel_main_cuda(int device)
 
 int* kernel_main_cpu()
 {
-	int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
-	memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
-	char* testarray =
-		"xxxxxxxxxx"
-		"xxxxxxxxxx"
-		"xxxxxxxxxx"
-		"xxxxxxxxxx"
-		"xxxxx    x"
-		"xxxxxxxxxx"
-		"xxx xxxxxx"
-		"xxx xxxxxx"
-		"xxx xxxxxx"
-		"xxx xxxxxx";
+    int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
+    memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
+    char* testarray =
+            "xxxxxxxxxx"
+            "xxxxxxxxxx"
+            "xxxxxxxxxx"
+            "xxxxxxxxxx"
+            "xxxxx    x"
+            "xxxxxxxxxx"
+            "xxx xxxxxx"
+            "xxx xxxxxx"
+            "xxx xxxxxx"
+            "xxx xxxxxx";
 
-	cpu_drc(testarray, 10, 10, ret);
-	return ret;
+    cpu_drc(testarray, 10, 10, ret);
+    return ret;
 }
 #endif

@@ -59,7 +59,12 @@ void ErrorList::setErrors(int* errors)
     ui->list->clear();
 
     int at = 0;
-    while(errors[at] != E_UNDEFINED) {
+    while(at < MAX_ERRORS) {
+        if(errors[at] == E_UNDEFINED) {
+            at += 3;
+            continue;
+        }
+
         QTreeWidgetItem* i = new QTreeWidgetItem(ui->list);
         i->setText(1, QString::number(errors[at+1]));
         i->setText(2, QString::number(errors[at+2]));
@@ -70,11 +75,6 @@ void ErrorList::setErrors(int* errors)
             i->setIcon(0, information);
             i->setText(0, tr("Info"));
             i->setText(3, tr("x=thread ID, y=total threads"));
-            break;
-        case I_SEC_DIM:
-            i->setIcon(0, information);
-            i->setText(0, tr("Info"));
-            i->setText(3, tr("section dimensions; x=width, y=height"));
             break;
 
         case E_HOR_SPACING_TOO_SMALL:

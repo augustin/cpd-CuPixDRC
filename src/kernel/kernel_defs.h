@@ -1,8 +1,6 @@
 #ifndef KERNEL_DEFS_H
 #define KERNEL_DEFS_H
 
-#define MAX_ERRORS 1000
-
 #if defined(CUDA)
 #   define SMP
 #   define SYNCTHREADS __syncthreads()
