@@ -18,7 +18,8 @@ set(CPU_KERNEL_SRCS  kernel/init.cpp
 
 set(CUDA_KERNEL_HDRS kernel/kernel.h
                      kernel/init.h
-                     kernel/errors.h)
+                     kernel/errors.h
+                     kernel/kernel_defs.h)
 
 set(SRCS DRCwind.cpp
          widgets/ErrorList.cpp
@@ -36,7 +37,7 @@ set(UIS DRCwind.ui
 qt_ui(UIC_HDRS ${UIS})
 qt_ui(UIC_CUDA_HDRS dialogs/SelectDevice.ui)
 
-add_executable(CpuPixDRC ${CPU_KERNEL_SRCS}
+add_executable(CpuPixDRC ${CPU_KERNEL_SRCS} ${CUDA_KERNEL_HDRS}
                          ${UIC_HDRS} ${MOC_SRCS}
                          ${SRCS})
 target_link_libraries(CpuPixDRC ChipLib ${QT_LIBS})
