@@ -66,6 +66,17 @@ void ErrorList::setErrors(int* errors)
 
         switch(errors[at]) {
 
+        case I_THREAD_ID:
+            i->setIcon(0, information);
+            i->setText(0, tr("Info"));
+            i->setText(3, tr("x=thread ID, y=total threads"));
+            break;
+        case I_SEC_DIM:
+            i->setIcon(0, information);
+            i->setText(0, tr("Info"));
+            i->setText(3, tr("section dimensions; x=width, y=height"));
+            break;
+
         case E_HOR_SPACING_TOO_SMALL:
             i->setIcon(0, error);
             i->setText(0, tr("Error"));
@@ -80,7 +91,7 @@ void ErrorList::setErrors(int* errors)
         default:
             i->setIcon(0, information);
             i->setText(0, tr("Info"));
-            i->setText(3, tr("Unknown error"));
+            i->setText(3, tr("Unknown, 0x%1").arg(QString::number(errors[at], 16)));
             break;
         }
 
