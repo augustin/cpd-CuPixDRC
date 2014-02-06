@@ -11,6 +11,7 @@
 
 #include <QFileDialog>
 #include <QElapsedTimer>
+#include <QMessageBox>
 
 DRCwind::DRCwind(QWidget *parent) :
     QMainWindow(parent),
@@ -51,23 +52,30 @@ void DRCwind::on_actionOpen_triggered()
 
 void DRCwind::on_actionRunDRC_triggered()
 {
-	int* errors = 0;
+    int* errors = 0;
+    QElapsedTimer t;
 
 #ifdef CUDA
     SelectDevice d;
     if(d.exec() == QDialog::Accepted) {
         int dev = d.device();
         ImageRequester* i = new ImageRequester(chip);
+        t.start();
 		errors = kernel_main_cuda(dev);
     }
 #else
     ImageRequester* i = new ImageRequester(chip);
+    t.start();
 	errors = kernel_main_cpu();
 #endif
+
+    qint64 time = t.elapsed();
+    QMessageBox::information(this, tr("Total time"), tr("Took %1 ms").arg(time), QMessageBox::Ok);
 
 	if(errors) {
 		ui->errorList->setErrors(errors);
 		free(errors);
 		ui->errorList->show();
 	}
+
 }
