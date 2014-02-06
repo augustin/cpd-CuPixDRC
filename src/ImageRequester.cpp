@@ -17,7 +17,7 @@ QImage ImageRequester::layer(QString layerName)
     QImage ret(chip->boundingRect(layerName).size(), QImage::Format_Mono);
     QPainter p;
     p.begin(&ret);
-    chip->render(new PainterLG(&p), layerName);
+    chip->render(new PainterLG(&p, true), layerName);
     p.end();
     return ret;
 }
