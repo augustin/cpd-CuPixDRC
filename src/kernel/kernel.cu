@@ -12,7 +12,7 @@ KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_b
     if(myThreadID > imgH || myThreadID > imgW)
         return;
 
-    int errbuf = maxErrors*myThreadID;
+    int errbuf = maxErrors*myThreadID*3;
     //ERROR(I_THREAD_ID, myThreadID, THREADS_TOT);
 
 #ifdef SMP
