@@ -4,8 +4,8 @@
 #define N 16
 #define blocksize 16
 
-int* kernel_main_cuda(int device);
-int* kernel_main_cpu();
+int* kernel_main_cuda(int device, const char *pixels, int w, int h);
+int* kernel_main_cpu(const char* pixels, int w, int h);
 
 #endif // KERNEL_INIT_H
 

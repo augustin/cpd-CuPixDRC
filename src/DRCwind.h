@@ -23,6 +23,8 @@ private slots:
 private:
     Ui::DRCwind *ui;
     Chip* chip;
+
+    QByteArray data;
 };
 
 #endif // DRCWIND_H

@@ -1,7 +1,7 @@
 #ifndef ERRORS_H
 #define ERRORS_H
 
-#define MAX_ERRORS                  1000
+#define MAX_ERRORS                  100000
 
 #define E_UNDEFINED					0x0000
 

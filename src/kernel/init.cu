@@ -4,23 +4,10 @@
 #include "errors.h"
 
 #ifdef CUDA
-int* kernel_main_cuda(int device)
+int* kernel_main_cuda(int device, const char* pixels, int w, int h)
 {
     int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
     memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
-
-    int w = 10, h = 10;
-    const char* pixels =
-            "xxxxxxxxxx"
-            "xxxxxxxxxx"
-            "xxxxxxxxxx"
-            "xxxxxxxxxx"
-            "xxxxx    x"
-            "xxxxxxxxxx"
-            "xxx xxxxxx"
-            "xxx xxxxxx"
-            "xxx xxxxxx"
-            "xxx xxxxxx";
 
     cudaSetDevice(device);
 
@@ -50,10 +37,10 @@ int* kernel_main_cuda(int device)
      *    too buggy and it's not my fault.
      */
 
-    dim3 blocks(3, 3);
-    dim3 threads(1, 1);
+    //dim3 blocks(32);
+    dim3 threads(6, 6);
 
-    device_drc<<<blocks, threads>>>(devPixels, w, h, error_buffer);
+    device_drc<<<32, threads>>>(devPixels, w, h, error_buffer);
 
     cudaMemcpy(ret, error_buffer, sizeof(int)*3*MAX_ERRORS, cudaMemcpyDeviceToHost);
     cudaFree(error_buffer);
@@ -66,23 +53,12 @@ int* kernel_main_cuda(int device)
 #include <stdlib.h>
 #include <memory.h>
 
-int* kernel_main_cpu()
+int* kernel_main_cpu(const char* pixels, int w, int h)
 {
     int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
     memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
-    const char* testarray =
-            "xxxxxxxxxx"
-            "xxxxxxxxxx"
-            "xxxxxxxxxx"
-            "xxxxxxxxxx"
-            "xxxxx    x"
-            "xxxxxxxxxx"
-            "xxx xxxxxx"
-            "xxx xxxxxx"
-            "xxx xxxxxx"
-            "xxx xxxxxx";
 
-    cpu_drc(testarray, 10, 10, ret);
+    cpu_drc(pixels, w, h, ret);
     return ret;
 }
 #endif
