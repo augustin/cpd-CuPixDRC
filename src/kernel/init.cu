@@ -23,18 +23,18 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h)
     /* NOTES:
      * 1. Warps (blocks) come in multiples of 32, so make sure your block size
      *    is a multiple of 32, or else the remaining SMP cores will be wasted.
-     * 2. Threads determine what check type they're doing based on what their
-     *    thread ID is (bX*bY*tX*tY), the image's dimensions, and total thread
-     *    count. Yes, the algorithim works on non-square images, and it uses
-     *    SYNCTHREADS so that the warp proceeds to the DRC all at once.
-     * 3. The maximum thread count is 2048, but I highly doubt it's possible to
-     *    write something that can use that many threads without deadlocking.
-     *    Plus this usecase has no need for that.
-     * 4. An acceptable way to determine optimum thread count (remember, thread-
-     *    count is blocks*threads) is to [TODO]
-     * 5. Each thread is limited to MAX_ERRORS/<numthreads> errors, so there's
+     * 2. Each thread is limited to MAX_ERRORS/<numthreads> errors, so there's
      *    no memory overflow. If you need more errors than that, your file is
      *    too buggy and it's not my fault.
+     * 3. Each thread schedules it's own checks using just it's thread ID and
+     *    the dimensions of the image. All threads do all horizontal checks, and
+     *    then all move on to vertical checks at the same time.
+     * 4. Each thread does the row in the image that corresponds with its thread
+     *    ID, then increments rows by the number of threads until it reaches the
+     *    end. The same is done for vertical checks.
+     * 5. The maximum thread count is 65,535, but I highly doubt it's possible to
+     *    write something that can use that many threads without deadlocking.
+     *    Plus this usecase has no need for that.
      */
 
     //dim3 blocks(32);
