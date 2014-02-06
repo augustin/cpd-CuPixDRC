@@ -10,7 +10,7 @@ int* kernel_main_cuda(int device)
     memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
 
     int w = 10, h = 10;
-    char* pixels =
+    const char* pixels =
             "xxxxxxxxxx"
             "xxxxxxxxxx"
             "xxxxxxxxxx"
@@ -70,7 +70,7 @@ int* kernel_main_cpu()
 {
     int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
     memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
-    char* testarray =
+    const char* testarray =
             "xxxxxxxxxx"
             "xxxxxxxxxx"
             "xxxxxxxxxx"
