@@ -69,12 +69,12 @@ void DRCwind::on_actionRunDRC_triggered()
     SelectDevice d;
     if(d.exec() == QDialog::Accepted) {
         int dev = d.device();
-        ImageRequester* i = new ImageRequester(chip);
+        //ImageRequester* i = new ImageRequester(chip);
         t.start();
         errors = kernel_main_cuda(dev, data.constData(), 2000, 2000);
     }
 #else
-    ImageRequester* i = new ImageRequester(chip);
+    //ImageRequester* i = new ImageRequester(chip);
     t.start();
     errors = kernel_main_cpu(data.constData(), 2000, 2000);
 #endif
