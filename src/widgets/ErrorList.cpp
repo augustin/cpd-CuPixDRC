@@ -59,7 +59,7 @@ void ErrorList::setErrors(int* errors)
     ui->list->clear();
 
     int at = 0;
-    while(at < MAX_ERRORS) {
+    while(at < MAX_ERRORS*3) {
         if(errors[at] == E_UNDEFINED) {
             at += 3;
             continue;
