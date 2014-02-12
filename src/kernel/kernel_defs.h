@@ -32,9 +32,9 @@
 #define THREAD_ID (THREADS_X*THREAD_ID_Y + THREAD_ID_X)
 #define THREADS_TOT (THREADS_X*THREADS_Y)
 
-#define ERROR(id, x, y) error_buffer[errbuf] = id; \
-    error_buffer[errbuf+1] = x; \
-    error_buffer[errbuf+2] = y; \
-    errbuf += 3
+#define ERROR(id, x, y, i) error_buffer[errbuf] = (id); \
+    error_buffer[errbuf+1] = (x); \
+    error_buffer[errbuf+2] = (y); \
+    errbuf = (errbuf+(i)) % (MAX_ERRORS*3)
 
 #endif // KERNEL_DEFS_H

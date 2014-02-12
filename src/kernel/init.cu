@@ -38,9 +38,9 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h)
      */
 
     //dim3 blocks(32);
-    dim3 threads(6, 6);
+    //dim3 threads(6, 6);
 
-    device_drc<<<32, threads>>>(devPixels, w, h, error_buffer);
+    device_drc<<<64, 1>>>(devPixels, w, h, error_buffer);
 
     cudaMemcpy(ret, error_buffer, sizeof(int)*3*MAX_ERRORS, cudaMemcpyDeviceToHost);
     cudaFree(error_buffer);

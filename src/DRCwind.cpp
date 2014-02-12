@@ -87,5 +87,4 @@ void DRCwind::on_actionRunDRC_triggered()
         free(errors);
         ui->errorList->show();
     }
-
 }
