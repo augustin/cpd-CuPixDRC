@@ -3,6 +3,9 @@
 
 #include "errors.h"
 
+#include <QElapsedTimer>
+#include <QString>
+
 #ifdef CUDA
 int* kernel_main_cuda(int device, const char* pixels, int w, int h)
 {
@@ -37,10 +40,15 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h)
      *    Plus this usecase has no need for that.
      */
 
-    //dim3 blocks(32);
-    //dim3 threads(6, 6);
+    int blocks = 32, threads = 64;
 
-    device_drc<<<32, 64>>>(devPixels, w, h, error_buffer);
+    QElapsedTimer t;
+    t.start();
+
+    device_drc<<<blocks, threads>>>(devPixels, w, h, error_buffer);
+
+    qint64 tot = t.elapsed();
+    qDebug(qPrintable(QString("%1 %2 %3").arg(blocks).arg(threads).arg(tot)));
 
     cudaMemcpy(ret, error_buffer, sizeof(int)*3*MAX_ERRORS, cudaMemcpyDeviceToHost);
     cudaFree(error_buffer);
