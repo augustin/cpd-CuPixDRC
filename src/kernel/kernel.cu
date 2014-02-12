@@ -6,7 +6,7 @@
 
 #include <QtGlobal>
 
-#ifndef IFS
+#ifndef IF_BLOCK_CHECKING
 KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_buffer)
 {
     int totalThreads = THREADS_TOT, myThreadID = THREAD_ID;
@@ -24,13 +24,16 @@ KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_b
 #endif
 
     /* Horizontal check */
-    int y = myThreadID, pixelsSinceBlack;
+    int y = myThreadID;
+    int pixelsSinceBlack;
     while(y < imgH) {
         pixelsSinceBlack = INT_MAX;
+        int rowbase = imgW*y;
         for(int x = 0; x < imgW; x++) {
-            int isBlack = (pixels[imgW*y+x] == 'x');
-            int error = (isBlack) && (pixelsSinceBlack < R_MIN_SPACE) && (pixelsSinceBlack != 0);
-            ERROR(E_HOR_SPACING_TOO_SMALL*error, x*error, y*error, 3*error);
+            int isBlack = (pixels[rowbase+x] == 'x');
+            int increment = ((isBlack) && (pixelsSinceBlack < R_MIN_SPACE) && (pixelsSinceBlack != 0))
+                    ? 3 : 0;
+            ERROR(E_HOR_SPACING_TOO_SMALL, x, y, increment);
             pixelsSinceBlack = (pixelsSinceBlack+1)*(isBlack != 1);
         }
         y += totalThreads;
@@ -46,12 +49,15 @@ KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_b
         pixelsSinceBlack = INT_MAX;
         for(int y = 0; y < imgH; y++) {
             int isBlack = (pixels[imgW*y+x] == 'x');
-            int error = (isBlack) && (pixelsSinceBlack < R_MIN_SPACE) && (pixelsSinceBlack != 0);
-            ERROR(E_HOR_SPACING_TOO_SMALL*error, x*error, y*error, 3*error);
+            int increment = ((isBlack) && (pixelsSinceBlack < R_MIN_SPACE) && (pixelsSinceBlack != 0))
+                    ? 3 : 0;
+            ERROR(E_HOR_SPACING_TOO_SMALL, x, y, increment);
             pixelsSinceBlack = (pixelsSinceBlack+1)*(isBlack != 1);
         }
         x += totalThreads;
     }
+
+    ERROR(0, 0, 0, 0); // overwrite the last (invalid) error
 }
 #else
 KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_buffer)
