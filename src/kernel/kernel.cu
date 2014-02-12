@@ -49,7 +49,7 @@ KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_b
             int isBlack = (pixels[imgW*y+x] == 'x');
             int increment = ((isBlack) && (pixelsSinceBlack < R_MIN_SPACE) && (pixelsSinceBlack != 0))
                     ? 3 : 0;
-            ERROR(E_HOR_SPACING_TOO_SMALL, x, y, increment);
+            ERROR(E_VER_SPACING_TOO_SMALL, x, y, increment);
             pixelsSinceBlack = (pixelsSinceBlack+1)*(isBlack != 1);
         }
         x += totalThreads;
