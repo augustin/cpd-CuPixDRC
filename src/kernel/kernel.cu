@@ -4,8 +4,6 @@
 #include "errors.h"
 #include "design_rules.h"
 
-#include <QtGlobal>
-
 #ifndef IF_BLOCK_CHECKING
 KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_buffer)
 {

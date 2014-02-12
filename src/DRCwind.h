@@ -25,6 +25,9 @@ private:
     Chip* chip;
 
     QByteArray data;
+#ifdef CUDA
+    int cudaDevice;
+#endif
 };
 
 #endif // DRCWIND_H

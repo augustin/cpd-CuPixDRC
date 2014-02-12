@@ -10,8 +10,8 @@
 #endif
 
 #include <QFileDialog>
-#include <QElapsedTimer>
-#include <QMessageBox>
+//#include <QElapsedTimer>
+//#include <QMessageBox>
 
 DRCwind::DRCwind(QWidget *parent) :
     QMainWindow(parent),
@@ -23,6 +23,13 @@ DRCwind::DRCwind(QWidget *parent) :
 
 #ifdef CUDA
     setWindowTitle(windowTitle() + " - CUDA");
+
+    SelectDevice d;
+    if(d.exec() == QDialog::Accepted) {
+        cudaDevice = d.device();
+    } else {
+        QApplication::exit();
+    }
 #else
     setWindowTitle(windowTitle() + " - CPU");
 #endif
@@ -63,24 +70,16 @@ void DRCwind::on_actionOpen_triggered()
 void DRCwind::on_actionRunDRC_triggered()
 {
     int* errors = 0;
-    QElapsedTimer t;
+    //QElapsedTimer t;
+    //t.start();
+    //qint64 time = t.elapsed();
+    //QMessageBox::information(this, tr("Total time"), tr("Took %1 ms").arg(time), QMessageBox::Ok);
 
 #ifdef CUDA
-    SelectDevice d;
-    if(d.exec() == QDialog::Accepted) {
-        int dev = d.device();
-        //ImageRequester* i = new ImageRequester(chip);
-        t.start();
-        errors = kernel_main_cuda(dev, data.constData(), 2000, 2000);
-    }
+    errors = kernel_main_cuda(cudaDevice, data.constData(), 2000, 2000);
 #else
-    //ImageRequester* i = new ImageRequester(chip);
-    t.start();
     errors = kernel_main_cpu(data.constData(), 2000, 2000);
 #endif
-
-    qint64 time = t.elapsed();
-    QMessageBox::information(this, tr("Total time"), tr("Took %1 ms").arg(time), QMessageBox::Ok);
 
     if(errors) {
         ui->errorList->setErrors(errors);
