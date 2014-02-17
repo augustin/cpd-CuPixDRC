@@ -7,7 +7,7 @@
 #include <QString>
 
 #ifdef CUDA
-int* kernel_main_cuda(int device, const char* pixels, int w, int h)
+int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, int threads)
 {
     int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
     memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
@@ -40,15 +40,7 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h)
      *    Plus this usecase has no need for that.
      */
 
-    int blocks = 32, threads = 64;
-
-    QElapsedTimer t;
-    t.start();
-
     device_drc<<<blocks, threads>>>(devPixels, w, h, error_buffer);
-
-    qint64 tot = t.elapsed();
-    qDebug(qPrintable(QString("%1 %2 %3").arg(blocks).arg(threads).arg(tot)));
 
     cudaMemcpy(ret, error_buffer, sizeof(int)*3*MAX_ERRORS, cudaMemcpyDeviceToHost);
     cudaFree(error_buffer);

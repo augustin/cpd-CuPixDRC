@@ -76,7 +76,7 @@ void DRCwind::on_actionRunDRC_triggered()
     //QMessageBox::information(this, tr("Total time"), tr("Took %1 ms").arg(time), QMessageBox::Ok);
 
 #ifdef CUDA
-    errors = kernel_main_cuda(cudaDevice, data.constData(), 2000, 2000);
+    errors = kernel_main_cuda(cudaDevice, data.constData(), 2000, 2000, 32, 64);
 #else
     errors = kernel_main_cpu(data.constData(), 2000, 2000);
 #endif
