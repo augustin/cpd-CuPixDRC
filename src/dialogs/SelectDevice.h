@@ -17,6 +17,8 @@ public:
 
 	int device();
 
+private slots:
+    void on_deviceList_itemDoubleClicked();
 private:
 	Ui::SelectDevice *ui;
 	void resizeCols();

@@ -45,3 +45,8 @@ int SelectDevice::device()
 {
 	return ui->deviceList->indexOfTopLevelItem(ui->deviceList->currentItem());
 }
+
+void SelectDevice::on_deviceList_itemDoubleClicked()
+{
+    accept();
+}
