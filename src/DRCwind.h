@@ -20,11 +20,15 @@ private slots:
     void on_actionOpen_triggered();
     void on_actionRunDRC_triggered();
 
+    void on_actionTestcase_triggered();
+
 private:
     Ui::DRCwind *ui;
     Chip* chip;
 
     QByteArray data;
+    int imgW;
+    int imgH;
 #ifdef CUDA
     int cudaDevice;
 #endif

@@ -28,6 +28,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionTestcase"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -45,6 +46,7 @@
    <addaction name="actionOpen"/>
    <addaction name="separator"/>
    <addaction name="actionRunDRC"/>
+   <addaction name="actionTestcase"/>
   </widget>
   <widget class="ErrorList" name="errorList">
    <attribute name="dockWidgetArea">
@@ -59,6 +61,11 @@
   <action name="actionRunDRC">
    <property name="text">
     <string>Run DRC</string>
+   </property>
+  </action>
+  <action name="actionTestcase">
+   <property name="text">
+    <string>Run testcase...</string>
    </property>
   </action>
  </widget>
