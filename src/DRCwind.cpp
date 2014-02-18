@@ -10,6 +10,7 @@
 #endif
 
 #include <QFileDialog>
+#include <QInputDialog>
 //#include <QElapsedTimer>
 //#include <QMessageBox>
 
@@ -36,6 +37,7 @@ DRCwind::DRCwind(QWidget *parent) :
 
     ui->actionOpen->setIcon(style()->standardIcon(QStyle::SP_DirOpenIcon));
     ui->actionRunDRC->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
+    ui->actionTestcase->setIcon(style()->standardIcon(QStyle::SP_TitleBarShadeButton));
 }
 
 DRCwind::~DRCwind()
@@ -55,16 +57,28 @@ void DRCwind::on_actionOpen_triggered()
                                          .arg(supportedFormats.join(";;")), 0);
 
     if(file.length()) {
-        /*
         if(chip) { delete chip; }
         chip = new Chip;
         chip->load(file);
-        */
-        QFile f(file);
-        f.open(QFile::ReadOnly);
-        data = f.readAll();
-        f.close();
     }
+}
+
+void DRCwind::on_actionTestcase_triggered()
+{
+    imgW = QInputDialog::getInt(this, tr("Width of testcase:"), tr("Width:"), 10, 10, 32000);
+    imgH = QInputDialog::getInt(this, tr("Height of testcase:"), tr("Height:"), 10, 10, 32000);
+
+    data = QByteArray(imgW*imgH, 'x');
+    int x = 6; int y = 6;
+    data[imgW*y+x] = ' ';
+    data[imgW*y+x+1] = ' ';
+    data[imgW*y+x+2] = ' ';
+    data[imgW*y+x+3] = ' ';
+    data[imgW*(y+1)+x] = ' ';
+    data[imgW*(y+2)+x] = ' ';
+    data[imgW*(y+3)+x] = ' ';
+
+    on_actionRunDRC_triggered();
 }
 
 void DRCwind::on_actionRunDRC_triggered()
@@ -76,9 +90,9 @@ void DRCwind::on_actionRunDRC_triggered()
     //QMessageBox::information(this, tr("Total time"), tr("Took %1 ms").arg(time), QMessageBox::Ok);
 
 #ifdef CUDA
-    errors = kernel_main_cuda(cudaDevice, data.constData(), 2000, 2000, 32, 64);
+    errors = kernel_main_cuda(cudaDevice, data.constData(), imgW, imgH, 32, 64);
 #else
-    errors = kernel_main_cpu(data.constData(), 2000, 2000);
+    errors = kernel_main_cpu(data.constData(), imgW, imgH);
 #endif
 
     if(errors) {
