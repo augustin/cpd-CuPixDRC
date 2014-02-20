@@ -91,7 +91,7 @@ void ErrorList::setErrors(int* errors)
         default:
             i->setIcon(0, information);
             i->setText(0, tr("Info"));
-            i->setText(3, tr("Unknown, 0x%1").arg(QString::number(errors[at], 16)));
+			i->setText(3, tr("Unknown, 0x%1").arg(QString::number(errors[at], 16).toUpper()));
             break;
         }
 

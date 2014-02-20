@@ -10,17 +10,17 @@ add_subdirectory(../../ChipLib/ChipLib "${CMAKE_CURRENT_BINARY_DIR}/ChipLib")
 include_directories(../../ChipLib/ChipLib)
 include_directories(../../ChipLib/ChipDisplay)
 
-set(CUDA_KERNEL_SRCS kernel/init.cu
-                     kernel/kernel.cu)
+set(CUDA_KERNEL_SRCS ../kernel/init.cu
+                     ../kernel/kernel.cu)
 
-set(CPU_KERNEL_SRCS  kernel/init.cpp
-                     kernel/kernel.cpp)
+set(CPU_KERNEL_SRCS  ../kernel/init.cpp
+                     ../kernel/kernel.cpp)
 
-set(CUDA_KERNEL_HDRS kernel/kernel.h
-                     kernel/init.h
-                     kernel/errors.h
-                     kernel/kernel_defs.h
-                     kernel/design_rules.h)
+set(CUDA_KERNEL_HDRS ../kernel/kernel.h
+                     ../kernel/init.h
+                     ../kernel/errors.h
+                     ../kernel/kernel_defs.h
+                     ../kernel/design_rules.h)
 
 set(SRCS DRCwind.cpp
          widgets/ErrorList.cpp
