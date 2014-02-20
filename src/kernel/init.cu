@@ -3,10 +3,18 @@
 
 #include "errors.h"
 
-#include <QElapsedTimer>
-#include <QString>
+#include <stdio.h>
 
 #ifdef CUDA
+void HandleError(cudaError_t err, const char *file, int line) {
+    if(err != cudaSuccess) {
+        printf("%s in %s at line %d\n", cudaGetErrorString(err),
+                file, line);
+        exit(EXIT_FAILURE);
+    }
+}
+#define HANDLE_ERROR(err) (HandleError(err, __FILE__, __LINE__))
+
 int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, int threads)
 {
     int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
@@ -16,11 +24,10 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, 
 
     char* devPixels;
     int* error_buffer;
-    cudaMalloc((void**)&devPixels, w*h);
+
+    HANDLE_ERROR(cudaMalloc((void**)&devPixels, w*h));
     cudaMalloc((void**)&error_buffer, sizeof(int)*3*MAX_ERRORS);
-
     cudaMemset(error_buffer, 0, sizeof(int)*3*MAX_ERRORS);
-
     cudaMemcpy(devPixels, pixels, w*h, cudaMemcpyHostToDevice);
 
     /* NOTES:
@@ -40,25 +47,40 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, 
      *    Plus this usecase has no need for that.
      */
 
+    cudaDeviceSynchronize();
     device_drc<<<blocks, threads>>>(devPixels, w, h, error_buffer);
+    cudaDeviceSynchronize();
 
-    cudaMemcpy(ret, error_buffer, sizeof(int)*3*MAX_ERRORS, cudaMemcpyDeviceToHost);
+    HANDLE_ERROR(cudaMemcpy(ret, error_buffer, sizeof(int)*3*MAX_ERRORS, cudaMemcpyDeviceToHost));
+    HANDLE_ERROR(cudaMemcpy((char*)pixels, devPixels, w*h, cudaMemcpyDeviceToHost));
+
     cudaFree(error_buffer);
     cudaFree(devPixels);
 
     return ret;
 }
 #else
-#include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
 
+#include <QElapsedTimer>
+#include <QString>
+
 int* kernel_main_cpu(const char* pixels, int w, int h)
 {
+    QElapsedTimer t;
+    t.start();
+
     int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
     memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
 
+    qint64 tot = t.restart();
+    qDebug(qPrintable(QString("%1 alloc/set").arg(QString::number(tot))));
+
     cpu_drc(pixels, w, h, ret);
+
+    tot = t.restart();
+    qDebug(qPrintable(QString("%1 run").arg(QString::number(tot))));
     return ret;
 }
 #endif
