@@ -1,7 +1,7 @@
 #include "DRCwind.h"
 #include "ui_DRCwind.h"
 
-#include "kernel/init.h"
+#include "../kernel/init.h"
 #include "Chip.h"
 #include "ImageRequester.h"
 
@@ -11,8 +11,6 @@
 
 #include <QFileDialog>
 #include <QInputDialog>
-//#include <QElapsedTimer>
-//#include <QMessageBox>
 
 DRCwind::DRCwind(QWidget *parent) :
     QMainWindow(parent),
@@ -90,7 +88,7 @@ void DRCwind::on_actionRunDRC_triggered()
     //QMessageBox::information(this, tr("Total time"), tr("Took %1 ms").arg(time), QMessageBox::Ok);
 
 #ifdef CUDA
-    errors = kernel_main_cuda(cudaDevice, data.constData(), imgW, imgH, 32, 64);
+    errors = kernel_main_cuda(cudaDevice, data.constData(), imgW, imgH, 192, 52);
 #else
     errors = kernel_main_cpu(data.constData(), imgW, imgH);
 #endif
