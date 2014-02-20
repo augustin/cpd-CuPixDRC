@@ -47,12 +47,10 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, 
      *    Plus this usecase has no need for that.
      */
 
-    cudaDeviceSynchronize();
     device_drc<<<blocks, threads>>>(devPixels, w, h, error_buffer);
     cudaDeviceSynchronize();
 
     HANDLE_ERROR(cudaMemcpy(ret, error_buffer, sizeof(int)*3*MAX_ERRORS, cudaMemcpyDeviceToHost));
-    HANDLE_ERROR(cudaMemcpy((char*)pixels, devPixels, w*h, cudaMemcpyDeviceToHost));
 
     cudaFree(error_buffer);
     cudaFree(devPixels);
