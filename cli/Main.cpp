@@ -75,7 +75,11 @@ int main(int argc, char *argv[])
 #endif
     } else {
         int* errors = 0;
-        QByteArray data(width*height, 'x');
+
+        char* data;
+        data = (char*)malloc(width*height);
+
+        memset((void*)data, 'x', width*height);
         int x = 6; int y = 6;
         data[width*y+x] = ' ';
         data[width*y+x+1] = ' ';
@@ -86,9 +90,9 @@ int main(int argc, char *argv[])
         data[width*(y+3)+x] = ' ';
 
 #ifdef CUDA
-        errors = kernel_main_cuda(device, data.constData(), width, height, blocks, threads);
+        errors = kernel_main_cuda(device, data, width, height, blocks, threads);
 #else
-        errors = kernel_main_cpu(data.constData(), width, height);
+        errors = kernel_main_cpu(data, width, height);
 #endif
         if(errors) {
             int at = 0;
@@ -99,8 +103,7 @@ int main(int argc, char *argv[])
                 }
 
                 QStringList errorData;
-                errorData.append(QString::number(errors[at+1]));
-                errorData.append(QString::number(errors[at+2]));
+                errorData.append(QString("%1, %2:").arg(errors[at+1]).arg(errors[at+2]));
 
                 switch(errors[at]) {
 
