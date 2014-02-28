@@ -51,7 +51,7 @@ void DRCwind::on_actionOpen_triggered()
             QFileDialog::getOpenFileName(this,
                             tr("Select Chip File"), "",
                             tr("All supported files (%1)")
-                            .arg(supportedFormats.join(";;")), 0);
+                            .arg(supportedFormats.join(" ")), 0);
 
     if(file.length() && file.endsWith(".txt", Qt::CaseInsensitive)) {
         QFile f(file);
