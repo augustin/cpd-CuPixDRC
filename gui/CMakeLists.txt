@@ -24,8 +24,7 @@ set(CUDA_KERNEL_HDRS ../kernel/kernel.h
 
 set(SRCS DRCwind.cpp
          widgets/ErrorList.cpp
-         Main.cpp
-         ImageRequester.cpp)
+         Main.cpp)
 
 set(HDRS DRCwind.h
          widgets/ErrorList.h)
