@@ -3,6 +3,7 @@
 
 #include "../kernel/init.h"
 #include "Chip.h"
+#include "GDLG.h"
 
 #ifdef CUDA
 #   include "dialogs/SelectDevice.h"
@@ -105,7 +106,18 @@ void DRCwind::on_actionRunDRC_triggered()
         errors = kernel_main_cpu(data.constData(), imgW, imgH);
 #endif
     } else {
-        // TODO
+        bool ok = false;
+        QString layer = QInputDialog::getItem(this, tr("Select layer"), tr("Layer to run DRC on:"), chip->layers, 0, false, &ok);
+        if(ok) {
+            GDLG* g = new GDLG(chip->boundingRect(layer), 14);
+            chip->render(g, layer);
+            PixelData p = g->getPixels();
+#ifdef CUDA
+            errors = kernel_main_cuda(cudaDevice, p.pixels, p.width, p.height, 64, 32);
+#else
+            errors = kernel_main_cpu(p.pixels, p.width, p.height);
+#endif
+        }
     }
 
     if(errors) {
