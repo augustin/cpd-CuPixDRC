@@ -26,14 +26,14 @@ KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_b
     int y = myThreadID;
     int pixelsSinceFilled;
     while(y < imgH) {
-        pixelsSinceFilled = INT_MAX;
+        pixelsSinceFilled = INT_MAX-imgW;
         int rowbase = imgW*y;
         for(int x = 0; x < imgW; x++) {
             int isFilled = (pixels[rowbase+x] == BLACK_PIXEL);
             int increment = ((isFilled) && (pixelsSinceFilled < R_MIN_SPACE) && (pixelsSinceFilled != 0))
                     ? 3 : 0;
             ERROR(E_HOR_SPACING_TOO_SMALL, x, y, increment);
-            pixelsSinceFilled = (pixelsSinceFilled+1)*(isFilled != 1);
+            pixelsSinceFilled = (pixelsSinceFilled+1)*(isFilled == 0);
         }
         y += totalThreads;
     }
@@ -45,13 +45,13 @@ KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_b
     /* Vertical check */
     int x = myThreadID;
     while(x < imgW) {
-        pixelsSinceFilled = INT_MAX;
+        pixelsSinceFilled = INT_MAX-imgH;
         for(int y = 0; y < imgH; y++) {
             int isFilled = (pixels[imgW*y+x] == BLACK_PIXEL);
             int increment = ((isFilled) && (pixelsSinceFilled < R_MIN_SPACE) && (pixelsSinceFilled != 0))
                     ? 3 : 0;
             ERROR(E_VER_SPACING_TOO_SMALL, x, y, increment);
-            pixelsSinceFilled = (pixelsSinceFilled+1)*(isFilled != 1);
+            pixelsSinceFilled = (pixelsSinceFilled+1)*(isFilled == 0);
         }
         x += totalThreads;
     }
