@@ -3,7 +3,6 @@
 
 #include "../kernel/init.h"
 #include "Chip.h"
-#include "ImageRequester.h"
 
 #ifdef CUDA
 #   include "dialogs/SelectDevice.h"
