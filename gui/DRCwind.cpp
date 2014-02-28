@@ -49,11 +49,23 @@ void DRCwind::on_actionOpen_triggered()
 
     QString file =
             QFileDialog::getOpenFileName(this,
-                                         tr("Select Chip File"), "",
-                                         tr("All supported files (%1)")
-                                         .arg(supportedFormats.join(";;")), 0);
+                            tr("Select Chip File"), "",
+                            tr("All supported files (%1)")
+                            .arg(supportedFormats.join(";;")), 0);
 
-    if(file.length()) {
+    if(file.length() && file.endsWith(".txt", Qt::CaseInsensitive)) {
+        QFile f(file);
+        f.open(QFile::ReadOnly);
+        data = f.readAll();
+        f.close();
+
+        /* CONSTANTS */
+        imgW = 287;
+        imgH = 697;
+        //imgW = 10;
+        //imgH = 10;
+    } else {
+        data = QByteArray();
         if(chip) { delete chip; }
         chip = new Chip;
         chip->load(file);
@@ -86,11 +98,15 @@ void DRCwind::on_actionRunDRC_triggered()
     //qint64 time = t.elapsed();
     //QMessageBox::information(this, tr("Total time"), tr("Took %1 ms").arg(time), QMessageBox::Ok);
 
+    if(data.size()) {
 #ifdef CUDA
-    errors = kernel_main_cuda(cudaDevice, data.constData(), imgW, imgH, 192, 52);
+        errors = kernel_main_cuda(cudaDevice, data.constData(), imgW, imgH, 64, 32);
 #else
-    errors = kernel_main_cpu(data.constData(), imgW, imgH);
+        errors = kernel_main_cpu(data.constData(), imgW, imgH);
 #endif
+    } else {
+        // TODO
+    }
 
     if(errors) {
         ui->errorList->setErrors(errors);

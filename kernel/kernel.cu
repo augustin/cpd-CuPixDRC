@@ -4,6 +4,8 @@
 #include "errors.h"
 #include "design_rules.h"
 
+#define BLACK_PIXEL 1
+
 KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_buffer)
 {
     int totalThreads = THREADS_TOT, myThreadID = THREAD_ID;
@@ -27,7 +29,7 @@ KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_b
         pixelsSinceFilled = INT_MAX;
         int rowbase = imgW*y;
         for(int x = 0; x < imgW; x++) {
-            int isFilled = (pixels[rowbase+x] == 'x');
+            int isFilled = (pixels[rowbase+x] == BLACK_PIXEL);
             int increment = ((isFilled) && (pixelsSinceFilled < R_MIN_SPACE) && (pixelsSinceFilled != 0))
                     ? 3 : 0;
             ERROR(E_HOR_SPACING_TOO_SMALL, x, y, increment);
@@ -45,7 +47,7 @@ KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_b
     while(x < imgW) {
         pixelsSinceFilled = INT_MAX;
         for(int y = 0; y < imgH; y++) {
-            int isFilled = (pixels[imgW*y+x] == 'x');
+            int isFilled = (pixels[imgW*y+x] == BLACK_PIXEL);
             int increment = ((isFilled) && (pixelsSinceFilled < R_MIN_SPACE) && (pixelsSinceFilled != 0))
                     ? 3 : 0;
             ERROR(E_VER_SPACING_TOO_SMALL, x, y, increment);
