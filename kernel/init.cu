@@ -73,19 +73,11 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, 
 
 int* kernel_main_cpu(const char* pixels, int w, int h)
 {
-    QElapsedTimer t;
-    t.start();
-
     int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
     memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
 
-    qint64 tot = t.restart();
-    qDebug(qPrintable(QString("%1 alloc/set").arg(QString::number(tot))));
-
     cpu_drc(pixels, w, h, ret);
 
-    tot = t.restart();
-    qDebug(qPrintable(QString("%1 run").arg(QString::number(tot))));
     return ret;
 }
 #endif
