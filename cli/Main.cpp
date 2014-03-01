@@ -130,7 +130,18 @@ int main(int argc, char *argv[])
 #else
     errors = kernel_main_cpu(data.constData(), width, height);
 #endif
+
     if(errors) {
+#define ERR errorData.prepend("Error:"); \
+        errCnt++
+#define INFO errorData.prepend("Info:"); \
+        infoCnt++
+#define WARN errorData.prepend("Warning:"); \
+        warnCnt++
+
+        int errCnt = 0;
+        int infoCnt = 0;
+        int warnCnt = 0;
         int at = 0;
         while(at < MAX_ERRORS*3) {
             if(errors[at] == E_UNDEFINED) {
@@ -144,21 +155,21 @@ int main(int argc, char *argv[])
             switch(errors[at]) {
 
             case I_THREAD_ID:
-                errorData.prepend("Info:");
+                INFO;
                 errorData.append("x=thread ID, y=total threads");
                 break;
 
             case E_HOR_SPACING_TOO_SMALL:
-                errorData.prepend("Error:");
+                ERR;
                 errorData.append("Horizontal spacing too small");
                 break;
             case E_VER_SPACING_TOO_SMALL:
-                errorData.prepend("Error:");
+                ERR;
                 errorData.append("Vertical spacing too small");
                 break;
 
             default:
-                errorData.prepend("Info:");
+                INFO;
                 errorData.append(QString("Unknown, 0x%1").arg(QString::number(errors[at], 16).toUpper()));
                 break;
             }
@@ -166,9 +177,10 @@ int main(int argc, char *argv[])
             printf(qPrintable(errorData.join(" ") + "\n"));
             at += 3;
         }
+        qDebug("TOTALS: %d errors, %d warnings, %d infos.", errCnt, warnCnt, infoCnt);
         free(errors);
     }
 
-    qDebug("Total execution time: %d ms.", t.elapsed());
+    qDebug("Execution time: %d ms.", t.elapsed());
     return 0;
 }
