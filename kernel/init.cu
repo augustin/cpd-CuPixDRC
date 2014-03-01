@@ -6,27 +6,33 @@
 #include <stdio.h>
 
 #ifdef CUDA
-void HandleError(cudaError_t err, const char *file, int line) {
+void handle_malloc(cudaError_t err, size_t size, const char *file, int line) {
     if(err != cudaSuccess) {
-        printf("%s in %s at line %d\n", cudaGetErrorString(err),
-                file, line);
+        printf("cudaMalloc failed: %s (tried to malloc %d bytes) in %s at line %d\n",
+               cudaGetErrorString(err), size, file, line);
         exit(EXIT_FAILURE);
     }
 }
-#define HANDLE_ERROR(err) (HandleError(err, __FILE__, __LINE__))
+#define HANDLE_MALLOC(err, size) (handle_malloc(err, size, __FILE__, __LINE__))
 
 int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, int threads)
 {
-    int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
-    memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
-
     cudaSetDevice(device);
 
     char* devPixels;
     int* error_buffer;
 
-    HANDLE_ERROR(cudaMalloc((void**)&devPixels, w*h));
-    HANDLE_ERROR(cudaMalloc((void**)&error_buffer, sizeof(int)*3*MAX_ERRORS));
+    size_t memFree;
+    size_t memTot;
+    cudaMemGetInfo(&memFree, &memTot);
+    if(w*h > memFree) {
+        printf("Not enough device memory available: need %d, available %d (total %d)\n",
+               w*h, memFree, memTot);
+        exit(EXIT_FAILURE);
+    }
+
+    HANDLE_MALLOC(cudaMalloc((void**)&devPixels, w*h), w*h);
+    HANDLE_MALLOC(cudaMalloc((void**)&error_buffer, sizeof(int)*3*MAX_ERRORS), w*h);
     cudaMemset(error_buffer, 0, sizeof(int)*3*MAX_ERRORS);
     cudaMemcpy(devPixels, pixels, w*h, cudaMemcpyHostToDevice);
 
@@ -50,7 +56,8 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, 
     device_drc<<<blocks, threads>>>(devPixels, w, h, error_buffer);
     cudaDeviceSynchronize();
 
-    HANDLE_ERROR(cudaMemcpy(ret, error_buffer, sizeof(int)*3*MAX_ERRORS, cudaMemcpyDeviceToHost));
+    int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
+    cudaMemcpy(ret, error_buffer, sizeof(int)*3*MAX_ERRORS, cudaMemcpyDeviceToHost);
 
     cudaFree(error_buffer);
     cudaFree(devPixels);
