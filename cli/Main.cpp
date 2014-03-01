@@ -2,6 +2,7 @@
 #include <QString>
 #include <QStringList>
 #include <QFile>
+#include <QElapsedTimer>
 
 #include <stdio.h>
 
@@ -16,7 +17,11 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
+#ifdef CUDA
     qDebug("CUDA Pixel-Based Design Rule Checker");
+#else
+    qDebug("CPU Pixel-Based Design Rule Checker");
+#endif
     qDebug("    Version 0.1.2, (C) 2013-2014 Augustin Cavalier");
     qDebug("    Released under the MIT license.\n");
 
@@ -86,6 +91,9 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
+    QElapsedTimer t;
+    t.start();
+
     QByteArray data;
     if(testcase) {
         data = QByteArray('x', width*height);
@@ -106,9 +114,15 @@ int main(int argc, char *argv[])
             qDebug("The chip is empty!");
             exit(1);
         }
-        qDebug("Executing DRC on device %d [%d blk, %d thrd] using chip %s...",
-               device, blocks, threads, fileName.toUtf8().constData());
+        qDebug("Using chipfile %s.", fileName.toUtf8().constData());
     }
+
+#ifdef CUDA
+    qDebug("Executing DRC on device %d [%d blk, %d thrd]...",
+           device, blocks, threads);
+#else
+    qDebug("Executing DRC on the CPU...");
+#endif
 
     int* errors = 0;
 #ifdef CUDA
@@ -155,5 +169,6 @@ int main(int argc, char *argv[])
         free(errors);
     }
 
+    qDebug("Total execution time: %d ms.", t.elapsed());
     return 0;
 }
