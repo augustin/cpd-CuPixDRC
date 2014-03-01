@@ -26,7 +26,7 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, 
     int* error_buffer;
 
     HANDLE_ERROR(cudaMalloc((void**)&devPixels, w*h));
-    cudaMalloc((void**)&error_buffer, sizeof(int)*3*MAX_ERRORS);
+    HANDLE_ERROR(cudaMalloc((void**)&error_buffer, sizeof(int)*3*MAX_ERRORS));
     cudaMemset(error_buffer, 0, sizeof(int)*3*MAX_ERRORS);
     cudaMemcpy(devPixels, pixels, w*h, cudaMemcpyHostToDevice);
 
