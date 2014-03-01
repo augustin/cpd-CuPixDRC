@@ -54,9 +54,21 @@ void ErrorList::resizeCols()
     }
 }
 
+#define INFO i->setIcon(0, information); \
+    i->setText(0, tr("Info")); \
+    infoCnt++
+
+#define ERR i->setIcon(0, error); \
+    i->setText(0, tr("Error")); \
+    errorCnt++
+
 void ErrorList::setErrors(int* errors)
 {
     ui->list->clear();
+
+    int errorCnt = 0;
+    int warnCnt = 0;
+    int infoCnt = 0;
 
     int at = 0;
     while(at < MAX_ERRORS*3) {
@@ -72,25 +84,21 @@ void ErrorList::setErrors(int* errors)
         switch(errors[at]) {
 
         case I_THREAD_ID:
-            i->setIcon(0, information);
-            i->setText(0, tr("Info"));
+            INFO;
             i->setText(3, tr("x=thread ID, y=total threads"));
             break;
 
         case E_HOR_SPACING_TOO_SMALL:
-            i->setIcon(0, error);
-            i->setText(0, tr("Error"));
+            ERR;
             i->setText(3, tr("Horizontal spacing too small"));
             break;
         case E_VER_SPACING_TOO_SMALL:
-            i->setIcon(0, error);
-            i->setText(0, tr("Error"));
+            ERR;
             i->setText(3, tr("Vertical spacing too small"));
             break;
 
         default:
-            i->setIcon(0, information);
-            i->setText(0, tr("Info"));
+            INFO;
 			i->setText(3, tr("Unknown, 0x%1").arg(QString::number(errors[at], 16).toUpper()));
             break;
         }
@@ -98,5 +106,8 @@ void ErrorList::setErrors(int* errors)
         at += 3;
     }
 
+    ui->actionErrors->setText(QString("Errors (%1)").arg(errorCnt));
+    ui->actionWarnings->setText(QString("Warnings (%1)").arg(warnCnt));
+    ui->actionInformation->setText(QString("Info (%1)").arg(infoCnt));
     resizeCols();
 }
