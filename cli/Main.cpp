@@ -150,7 +150,6 @@ int main(int argc, char *argv[])
             }
 
             QStringList errorData;
-            errorData.append(QString::number(at/3));
             errorData.append(QString("%1, %2:").arg(errors[at+1]).arg(errors[at+2]));
 
             switch(errors[at]) {
