@@ -18,9 +18,9 @@ int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
 #ifdef CUDA
-    qDebug("CUDA Pixel-Based Design Rule Checker");
+    qDebug("[CUDA] Pixel-Based Design Rule Checker");
 #else
-    qDebug("CPU Pixel-Based Design Rule Checker");
+    qDebug("[CPU] Pixel-Based Design Rule Checker");
 #endif
     qDebug("    Version 0.1.2, (C) 2013-2014 Augustin Cavalier");
     qDebug("    Released under the MIT license.\n");
@@ -150,6 +150,7 @@ int main(int argc, char *argv[])
             }
 
             QStringList errorData;
+            errorData.append(QString::number(at/3));
             errorData.append(QString("%1, %2:").arg(errors[at+1]).arg(errors[at+2]));
 
             switch(errors[at]) {
