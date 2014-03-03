@@ -9,13 +9,12 @@
 KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_buffer)
 {
     int totalThreads = THREADS_TOT, myThreadID = THREAD_ID;
-    int maxErrors = (MAX_ERRORS/totalThreads);
-    if(maxErrors == 0) { maxErrors = 1; }
 
     if(myThreadID > imgH || myThreadID > imgW)
         return;
 
-    int errbuf = maxErrors*myThreadID*3;
+    int errbuf = ((myThreadID*541+1987) % MAX_ERRORS)*3;
+    //int errbuf = ((BLOCK_INDEX*(MAX_ERRORS/BLOCKS_TOT)+myThreadID) % MAX_ERRORS)*3;
     //ERROR(I_THREAD_ID, myThreadID, THREADS_TOT, 3);
 
 #ifdef SMP
@@ -31,7 +30,7 @@ KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_b
         for(int x = 0; x < imgW; x++) {
             int isFilled = (pixels[rowbase+x] == BLACK_PIXEL);
             int increment = ((isFilled) && (pixelsSinceFilled < R_MIN_SPACE) && (pixelsSinceFilled != 0))
-                    ? 3 : 0;
+                    ? 3*(1223) : 0;
             ERROR(E_HOR_SPACING_TOO_SMALL, x, y, increment);
             pixelsSinceFilled = (pixelsSinceFilled+1)*(isFilled == 0);
         }
@@ -49,7 +48,7 @@ KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_b
         for(int y = 0; y < imgH; y++) {
             int isFilled = (pixels[imgW*y+x] == BLACK_PIXEL);
             int increment = ((isFilled) && (pixelsSinceFilled < R_MIN_SPACE) && (pixelsSinceFilled != 0))
-                    ? 3 : 0;
+                    ? 3*(1223) : 0;
             ERROR(E_VER_SPACING_TOO_SMALL, x, y, increment);
             pixelsSinceFilled = (pixelsSinceFilled+1)*(isFilled == 0);
         }

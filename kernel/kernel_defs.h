@@ -19,6 +19,9 @@
 
     #define THREAD_ID_X (blockIdx.x*blockDim.x+threadIdx.x)
     #define THREAD_ID_Y (blockIdx.y*blockDim.y+threadIdx.y)
+
+    #define BLOCKS_TOT (gridDim.x*gridDim.y)
+    #define BLOCK_INDEX (blockIdx.y*gridDim.x+blockIdx.x)
 #else
     #define KERNEL_FUNCTION(type, name) type cpu_##name
 
@@ -27,6 +30,9 @@
 
     #define THREAD_ID_X 0
     #define THREAD_ID_Y 0
+
+    #define BLOCKS_TOT 1
+    #define BLOCK_INDEX 0
 #endif
 
 #define THREAD_ID (THREADS_X*THREAD_ID_Y + THREAD_ID_X)
