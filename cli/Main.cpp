@@ -91,9 +91,6 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
-    QElapsedTimer t;
-    t.start();
-
     QByteArray data;
     if(testcase) {
         data = QByteArray('x', width*height);
@@ -116,6 +113,9 @@ int main(int argc, char *argv[])
         }
         qDebug("Using chipfile %s.", fileName.toUtf8().constData());
     }
+
+    QElapsedTimer t;
+    t.start();
 
 #ifdef CUDA
     qDebug("Executing DRC on device %d [%d blk, %d thrd]...",
