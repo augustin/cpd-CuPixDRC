@@ -1,6 +1,7 @@
 #ifndef KERNEL_KERNEL_H
 #define KERNEL_KERNEL_H
 
+/* Arch-specific macros. */
 #if defined(CUDA)
     #define SMP
     #define SYNCTHREADS __syncthreads()
@@ -35,6 +36,7 @@
     #define BLOCK_INDEX 0
 #endif
 
+/* Non-arch-specific macros. */
 #define THREAD_ID (THREADS_X*THREAD_ID_Y + THREAD_ID_X)
 #define THREADS_TOT (THREADS_X*THREADS_Y)
 
@@ -43,6 +45,22 @@
     error_buffer[errbuf+2] = (y); \
     errbuf = (errbuf+(i)) % (MAX_ERRORS*3)
 
+/* Profiling macros.
+ *    _START() creates a timer and starts
+ *    _POINT(str) prints "TIME ms, STR", time is since last _POINT or _START
+ *    _END() stops the timer
+ */
+#ifdef KERNEL_PROFILER
+    #define PROFILER_START QElapsedTimer PROFILER_TIMER; PROFILER_TIMER.start()
+    #define PROFILER_POINT(str) qDebug("%lld ms, %s", PROFILER_TIMER.restart(), (str))
+    #define PROFILER_END PROFILER_TIMER.invalidate()
+#else
+    #define PROFILER_START
+    #define PROFILER_POINT
+    #define PROFILER_END
+#endif
+
+/* The actual kernel function. */
 KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_buffer);
 
 #endif // KERNEL_KERNEL_H

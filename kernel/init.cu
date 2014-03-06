@@ -2,12 +2,13 @@
 #include "kernel.h"
 #include "errors.h"
 
+#include <QElapsedTimer>
 #include <stdio.h>
 
 #ifdef CUDA
 void handle_malloc(cudaError_t err, size_t size, const char *file, int line) {
     if(err != cudaSuccess) {
-        printf("cudaMalloc failed: %s (tried to malloc %d bytes) in %s at line %d\n",
+        printf("cudaMalloc failed: %s (tried to malloc %lud bytes) in %s at line %d\n",
                cudaGetErrorString(err), size, file, line);
         exit(EXIT_FAILURE);
     }
@@ -25,15 +26,19 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, 
     size_t memTot;
     cudaMemGetInfo(&memFree, &memTot);
     if(w*h > memFree) {
-        printf("Not enough device memory available: need %d, available %d (total %d)\n",
+        printf("Not enough device memory available: need %d, available %lud (total %lud)\n",
                w*h, memFree, memTot);
         exit(EXIT_FAILURE);
     }
+
+    PROFILER_START;
 
     HANDLE_MALLOC(cudaMalloc((void**)&devPixels, w*h), w*h);
     HANDLE_MALLOC(cudaMalloc((void**)&error_buffer, sizeof(int)*3*MAX_ERRORS), w*h);
     cudaMemset(error_buffer, 0, sizeof(int)*3*MAX_ERRORS);
     cudaMemcpy(devPixels, pixels, w*h, cudaMemcpyHostToDevice);
+
+    PROFILER_POINT("cudaMalloc/cudaMemcpy");
 
     /* NOTES:
      * 1. Warps (blocks) come in multiples of 32, so make sure your block size
@@ -55,11 +60,16 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, 
     device_drc<<<blocks, threads>>>(devPixels, w, h, error_buffer);
     cudaDeviceSynchronize();
 
+    PROFILER_POINT("execute");
+
     int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
     cudaMemcpy(ret, error_buffer, sizeof(int)*3*MAX_ERRORS, cudaMemcpyDeviceToHost);
 
     cudaFree(error_buffer);
     cudaFree(devPixels);
+
+    PROFILER_POINT("cudaMemcpy/cudaFree");
+    PROFILER_END;
 
     return ret;
 }
@@ -72,10 +82,17 @@ int* kernel_main_cuda(int device, const char* pixels, int w, int h, int blocks, 
 
 int* kernel_main_cpu(const char* pixels, int w, int h)
 {
+    PROFILER_START;
+
     int* ret = (int*)malloc(sizeof(int)*3*MAX_ERRORS);
     memset((char*)ret, '\0', sizeof(int)*3*MAX_ERRORS);
 
+    PROFILER_POINT("memset");
+
     cpu_drc(pixels, w, h, ret);
+
+    PROFILER_POINT("execute");
+    PROFILER_END;
 
     return ret;
 }
