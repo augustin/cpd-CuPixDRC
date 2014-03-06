@@ -11,6 +11,7 @@
 
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QMessageBox>
 
 DRCwind::DRCwind(QWidget *parent) :
     QMainWindow(parent),
@@ -21,16 +22,16 @@ DRCwind::DRCwind(QWidget *parent) :
     chip = 0;
 
 #ifdef CUDA
-    setWindowTitle(windowTitle() + " - CUDA");
-
     SelectDevice d;
     if(d.exec() == QDialog::Accepted) {
         cudaDevice = d.device();
     } else {
         QApplication::exit();
     }
+
+    setWindowTitle("[CUDA] " + windowTitle());
 #else
-    setWindowTitle(windowTitle() + " - CPU");
+    setWindowTitle("[CPU] " + windowTitle());
 #endif
 
     ui->actionOpen->setIcon(style()->standardIcon(QStyle::SP_DirOpenIcon));
@@ -60,11 +61,12 @@ void DRCwind::on_actionOpen_triggered()
         data = f.readAll();
         f.close();
 
-        /* CONSTANTS */
-        imgW = 287;
-        imgH = 697;
-        //imgW = 10;
-        //imgH = 10;
+        imgW = QInputDialog::getInt(this, tr("Load ChipText..."), tr("Width?"), 27675, 0);
+        imgH = QInputDialog::getInt(this, tr("Load ChipText..."), tr("Height?"), 27675, 0);
+        if(imgW == 0 || imgH == 0) {
+            data = QByteArray();
+            QMessageBox::critical(this, tr("Load failed"), tr("Load failed: invalid width or height specified!"), QMessageBox::Ok, QMessageBox::NoButton);
+        }
     } else {
         data = QByteArray();
         if(chip) { delete chip; }
