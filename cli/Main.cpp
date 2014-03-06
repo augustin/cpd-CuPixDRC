@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 #else
     qDebug("[CPU] Pixel-Based Design Rule Checker");
 #endif
-    qDebug("    Version 0.1.2, (C) 2013-2014 Augustin Cavalier");
+    qDebug("    Version %s, (C) 2013-2014 Augustin Cavalier", KERNEL_VERSION);
     qDebug("    Released under the MIT license.\n");
 
     int blocks = 64;
