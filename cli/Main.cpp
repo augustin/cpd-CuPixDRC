@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
                 printf("%s", qPrintable(QString("\t%1 GHz\n").arg(prop.clockRate/(1000.0*1000.0))));
             }
 
-            exit(0);
+            exit(1);
         }
 #endif
     }
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
         printf("    -d, --device\t Device to execute on [default=0].\n");
         printf("    -ld, --listdev\t List available CUDA devices.\n");
 #endif
-        exit(0);
+        exit(1);
     }
 
     QByteArray data;
