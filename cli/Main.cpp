@@ -114,9 +114,6 @@ int main(int argc, char *argv[])
         qDebug("Using chipfile %s.", fileName.toUtf8().constData());
     }
 
-    QElapsedTimer t;
-    t.start();
-
 #ifdef CUDA
     qDebug("Executing DRC on device %d [%d blk, %d thrd]...",
            device, blocks, threads);
@@ -181,6 +178,5 @@ int main(int argc, char *argv[])
         free(errors);
     }
 
-    qDebug("Execution time: %d ms.", t.elapsed());
     return 0;
 }
