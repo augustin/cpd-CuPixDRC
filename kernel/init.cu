@@ -1,6 +1,5 @@
 #include "init.h"
 #include "kernel.h"
-
 #include "errors.h"
 
 #include <stdio.h>

@@ -19,7 +19,6 @@ set(CPU_KERNEL_SRCS  ../kernel/init.cpp
 set(CUDA_KERNEL_HDRS ../kernel/kernel.h
                      ../kernel/init.h
                      ../kernel/errors.h
-                     ../kernel/kernel_defs.h
                      ../kernel/design_rules.h)
 
 set(SRCS DRCwind.cpp
