@@ -17,6 +17,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
+#if !defined(NO_INFO)
 #ifdef CUDA
     qDebug("[CUDA] Pixel-Based Design Rule Checker");
 #else
@@ -24,6 +25,7 @@ int main(int argc, char *argv[])
 #endif
     qDebug("    Version %s, (C) 2013-2014 Augustin Cavalier", KERNEL_VERSION);
     qDebug("    Released under the MIT license.\n");
+#endif
 
     int blocks = 64;
     int threads = 32;
@@ -118,19 +120,23 @@ int main(int argc, char *argv[])
             qDebug("The chip is empty!");
             exit(1);
         }
+#ifndef NO_INFO
         qDebug("Using chipfile %s.", fileName.toUtf8().constData());
+#endif
     }
 
 
-#ifdef CUDA
+#if defined(CUDA) && !defined(NO_INFO)
     qDebug("Executing DRC on device %d [%d blk, %d thrd]...",
            device, blocks, threads);
-#else
+#elif defined(CUDA) && !defined(NO_INFO)
     qDebug("Executing DRC on the CPU...");
 #endif
 
     int* errors = 0;
+#ifndef NO_INFO
     printf("cudaMalloc/cudaMemcpy\texecute\tcudaMemcpy/cudaFree\n");
+#endif
     for(int i = 0; i < runs; i++) {
 #ifdef CUDA
         errors = kernel_main_cuda(device, data.constData(), width, height, blocks, threads);
@@ -140,6 +146,7 @@ int main(int argc, char *argv[])
         printf("\n");
     }
 
+#ifndef NO_INFO
     if((runs == 1) && errors) {
 #define ERR errorData.prepend("Error:"); \
         errCnt++
@@ -187,8 +194,9 @@ int main(int argc, char *argv[])
             at += 3;
         }
         qDebug("TOTALS: %d errors, %d warnings, %d infos.", errCnt, warnCnt, infoCnt);
-        free(errors);
     }
+#endif
 
+    free(errors);
     return 0;
 }
