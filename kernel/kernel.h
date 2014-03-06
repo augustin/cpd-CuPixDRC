@@ -52,7 +52,7 @@
  */
 #ifdef KERNEL_PROFILER
     #define PROFILER_START QElapsedTimer PROFILER_TIMER; PROFILER_TIMER.start()
-    #define PROFILER_POINT(str) qDebug("%lld ms, %s", PROFILER_TIMER.restart(), (str))
+    #define PROFILER_POINT(str) printf("%lld ms\t", PROFILER_TIMER.restart())
     #define PROFILER_END PROFILER_TIMER.invalidate()
 #else
     #define PROFILER_START

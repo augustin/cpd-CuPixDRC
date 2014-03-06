@@ -31,14 +31,19 @@ int main(int argc, char *argv[])
     int height = -1;
     int device = 0;
     bool testcase = true;
+    int runs = 1;
     QString fileName;
 
     QStringList args = app.arguments();
-    for(int i = 0; i < args.size(); i++) {
+    int i = 1;
+    while(i < args.size()) {
         QString arg = args.at(i);
         if(arg == "textchip") {
             testcase = false;
             fileName = args.at(i+1);
+            i++;
+        } else if(arg == "--batch") {
+            runs = args.at(i+1).toInt();
             i++;
         } else if(arg == "-b" || arg == "--blocks") {
             blocks = args.at(i+1).toInt();
@@ -56,7 +61,7 @@ int main(int argc, char *argv[])
 #ifdef CUDA
         else if(arg == "-d" || arg == "--device") {
             device = args.at(i+1).toInt();
-            i += 2;
+            i++;
         } else if(arg == "-ld" || arg == "--listdev") {
             printf("ID\tName\t\t\tSMPs\tClock\n");
             int count = 0;
@@ -73,6 +78,7 @@ int main(int argc, char *argv[])
             exit(1);
         }
 #endif
+        i++;
     }
 
     if(width == -1 || height == -1) {
@@ -82,6 +88,7 @@ int main(int argc, char *argv[])
         printf("Arguments:\n");
         printf("    -w, --width\t\t Width of the chip (or testcase).\n");
         printf("    -h, --height\t Height of the chip (or testcase).\n");
+        printf("    --batch\t Run in batch-test mode with the specified number of runs.\n");
 #ifdef CUDA
         printf("    -b, --blocks\t Number of blocks to use [default=64].\n");
         printf("    -t, --threads\t Number of threads to use [default=32].\n");
@@ -114,6 +121,7 @@ int main(int argc, char *argv[])
         qDebug("Using chipfile %s.", fileName.toUtf8().constData());
     }
 
+
 #ifdef CUDA
     qDebug("Executing DRC on device %d [%d blk, %d thrd]...",
            device, blocks, threads);
@@ -122,13 +130,17 @@ int main(int argc, char *argv[])
 #endif
 
     int* errors = 0;
+    printf("cudaMalloc/cudaMemcpy\texecute\tcudaMemcpy/cudaFree\n");
+    for(int i = 0; i < runs; i++) {
 #ifdef CUDA
-    errors = kernel_main_cuda(device, data.constData(), width, height, blocks, threads);
+        errors = kernel_main_cuda(device, data.constData(), width, height, blocks, threads);
 #else
-    errors = kernel_main_cpu(data.constData(), width, height);
+        errors = kernel_main_cpu(data.constData(), width, height);
 #endif
+        printf("\n");
+    }
 
-    if(errors) {
+    if((runs == 1) && errors) {
 #define ERR errorData.prepend("Error:"); \
         errCnt++
 #define INFO errorData.prepend("Info:"); \
@@ -171,7 +183,7 @@ int main(int argc, char *argv[])
                 break;
             }
 
-            printf(qPrintable(errorData.join(" ") + "\n"));
+            printf("%s", qPrintable(errorData.join(" ") + "\n"));
             at += 3;
         }
         qDebug("TOTALS: %d errors, %d warnings, %d infos.", errCnt, warnCnt, infoCnt);
