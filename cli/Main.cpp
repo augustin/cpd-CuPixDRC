@@ -31,7 +31,9 @@ int main(int argc, char *argv[])
     int threads = 32;
     int width = -1;
     int height = -1;
+#ifdef CUDA
     int device = 0;
+#endif
     bool testcase = true;
     int runs = 1;
     QString fileName;
