@@ -14,18 +14,25 @@
 #include "../kernel/init.h"
 #include "../kernel/errors.h"
 
+#ifndef NO_INFO
+    #define msgErr qDebug
+    #define msgOut printf
+#else
+    #define msgErr
+    #define msgOut
+#endif
+
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-#if !defined(NO_INFO)
+
 #ifdef CUDA
-    qDebug("[CUDA] Pixel-Based Design Rule Checker");
+    msgErr("[CUDA] Pixel-Based Design Rule Checker");
 #else
-    qDebug("[CPU] Pixel-Based Design Rule Checker");
+    msgErr("[CPU] Pixel-Based Design Rule Checker");
 #endif
-    qDebug("    Version %s, (C) 2013-2014 Augustin Cavalier", KERNEL_VERSION);
-    qDebug("    Released under the MIT license.\n");
-#endif
+    msgErr("    Version %s, (C) 2013-2014 Augustin Cavalier", KERNEL_VERSION);
+    msgErr("    Released under the MIT license.\n");
 
     int blocks = 64;
     int threads = 32;
@@ -35,7 +42,6 @@ int main(int argc, char *argv[])
     int device = 0;
 #endif
     bool testcase = true;
-    int runs = 1;
     QString fileName;
 
     QStringList args = app.arguments();
@@ -45,9 +51,6 @@ int main(int argc, char *argv[])
         if(arg == "textchip") {
             testcase = false;
             fileName = args.at(i+1);
-            i++;
-        } else if(arg == "--batch") {
-            runs = args.at(i+1).toInt();
             i++;
         } else if(arg == "-b" || arg == "--blocks") {
             blocks = args.at(i+1).toInt();
@@ -119,37 +122,32 @@ int main(int argc, char *argv[])
         data = f.readAll();
         f.close();
         if(!data.size()) {
-            qDebug("The chip is empty!");
+            msgErr("The chip is empty!");
             exit(1);
         }
-#ifndef NO_INFO
-        qDebug("Using chipfile %s.", fileName.toUtf8().constData());
-#endif
+        msgErr("Using chipfile %s.", fileName.toUtf8().constData());
     }
 
 
-#if defined(CUDA) && !defined(NO_INFO)
-    qDebug("Executing DRC on device %d [%d blk, %d thrd]...",
+#ifdef CUDA
+    msgErr("Executing DRC on device %d [%d blk, %d thrd]...",
            device, blocks, threads);
-#elif defined(CUDA) && !defined(NO_INFO)
-    qDebug("Executing DRC on the CPU...");
+#else
+    msgErr("Executing DRC on the CPU...");
 #endif
 
     int* errors = 0;
-#ifndef NO_INFO
-    printf("cudaMalloc/cudaMemcpy\texecute\tcudaMemcpy/cudaFree\n");
-#endif
-    for(int i = 0; i < runs; i++) {
+    msgOut("cudaMalloc/cudaMemcpy\texecute\tcudaMemcpy/cudaFree\n");
+    //printf("%d", threads);
 #ifdef CUDA
-        errors = kernel_main_cuda(device, data.constData(), width, height, blocks, threads);
+    errors = kernel_main_cuda(device, data.constData(), width, height, blocks, threads);
 #else
-        errors = kernel_main_cpu(data.constData(), width, height);
+    errors = kernel_main_cpu(data.constData(), width, height);
 #endif
-        printf("\n");
-    }
+    printf("\n");
 
 #ifndef NO_INFO
-    if((runs == 1) && errors) {
+    if(errors) {
 #define ERR errorData.prepend("Error:"); \
         errCnt++
 #define INFO errorData.prepend("Info:"); \
@@ -192,10 +190,10 @@ int main(int argc, char *argv[])
                 break;
             }
 
-            printf("%s", qPrintable(errorData.join(" ") + "\n"));
+            msgOut("%s", qPrintable(errorData.join(" ") + "\n"));
             at += 3;
         }
-        qDebug("TOTALS: %d errors, %d warnings, %d infos.", errCnt, warnCnt, infoCnt);
+        msgErr("TOTALS: %d errors, %d warnings, %d infos.", errCnt, warnCnt, infoCnt);
     }
 #endif
 
