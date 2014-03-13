@@ -10,7 +10,7 @@ KERNEL_FUNCTION(void, drc) (const char* pixels, int imgW, int imgH, int* error_b
 {
     int totalThreads = THREADS_TOT, myThreadID = THREAD_ID;
 
-    if(myThreadID > imgH || myThreadID > imgW)
+    if(myThreadID > imgH || myThreadID > imgW) /* THIS IS A BUG */
         return;
 
     int errbuf = ((myThreadID*541+1987) % MAX_ERRORS)*3;
