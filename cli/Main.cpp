@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
                 cudaGetDeviceProperties(&prop, i);
                 printf("%d\t", i);
                 printf("%s\t", prop.name);
-                printf("%s", qPrintable(QString::number(prop.multiProcessorCount)));
+                printf("%d", prop.multiProcessorCount);
                 printf("%s", qPrintable(QString("\t%1 GHz\n").arg(prop.clockRate/(1000.0*1000.0))));
             }
 
