@@ -1,0 +1,8 @@
+Speed of Memory in CUDA
+===============================
+(done against CUDA 5.5)
+The way CUDA works appears to have the kernel's execution time included in the copyback/free times. Tests executed with 32 blocks and 64 threads/block.
+
+4000000 bytes: 2ms allocate/copyto, 12ms copyback/free.
+8000000 bytes: 5ms allocate/copyto, 23ms copyback/free.
+16000000 byts: 11ms alloc/copyto,   45ms copyback/free.

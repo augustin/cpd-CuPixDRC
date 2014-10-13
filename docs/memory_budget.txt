@@ -1,0 +1,32 @@
+Memory Budget
+========================
+Mono images, 1bpp. Store pixels in 1 byte pieces, 8 pixels per byte.
+On a 1GB GPU, use 1000MB for image max and 3KB for error storage (may be too large).
+In 1000MB: 1,000,000,000 pixels can be stored, 31,662 pixels on a side.
+
+Dimensions of CIF in actual size, units: 429,348 * 429,346 = 185 billion uni^2
+lambda is 40. (CMF layer had 120 distance; so 120/3=40). Inspecting CMF, 120 units. (Used ChipDisplay). 120/3=lambda is 40 for this chip
+Minimum scale factor is 1/14, at that size lambda is 2.8 pixels. 1/14 *is* a safe lambda.
+
+	1polyedge at 20
+	1polyedge at 140
+	: pass matrix, pass pixel
+
+	20/14=1.43	 1
+	140/14=10	10
+	120/14=8.57	 8
+
+	1polyedge at 20
+	1polyedge at 120
+	: pass matrix, nonpass pixel
+
+If it's larger, you can check chunks of the chip at a time. Note: advanced feature, I won't be getting to this before the science fair. Put it in the paper tho.
+
+Benchmark: find the curve for data copies onto the GPU.
+
+It should work as such:
+	Decide on a region to check
+	Iterate through all items in the list, run overlap test
+	Draw specified objects at a good resolution
+	Copy image to GPU and check
+	Repeat until all regions have been completed.
